@@ -8,7 +8,9 @@
     "build": "npx tsc",
     "test": "npm run build && npm run jasmine",
     "lint": "eslint 'index.js'",
-    "prettier": "prettier --config .prettierrc '*.js' --write"
+    "prettier": "prettier --config .prettierrc '*.js' --write",
+    "jasmine": "jasmine",
+    "start": "nodemon dist/index.js"
   },
   "repository": {
     "type": "git",
