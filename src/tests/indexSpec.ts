@@ -1,13 +1,16 @@
+import supertest from 'supertest';
+import app from '../index';
 
-const sharp = require('sharp');
+const request = supertest(app);
 
-describe ("Sharp image testing", () => {
-    /* it("Recieve new image", () => {
-        constmyVar = true;
-        expect(myVar).toBe(true);
-    }); */
-    it("dummy test", () => {
-        const constmyVar = true;
-        expect(constmyVar).toBe(true);
-    });
+describe ("Enpoint testing", () => {
+    it("Connects to test endpoint", async() => {
+        const response = await request.get('/home');
+        expect(response.status).toBe(200);
+    })
+    /* it("Connects to main endpoint", async(done) => {
+        const response = await request.get('/api');
+        expect(response.type).toBe(200);
+        done();
+    }) */
 });
