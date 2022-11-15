@@ -1,12 +1,12 @@
 import express from "express";
-import preview from "./api/preview";
+import resize from "./api/resize";
 
 const routes = express.Router();
 
 routes.get('/', (req,res) => {
-    res.send('<h1>Api Processing image</h1>');
+    res.send('<h1>Api Processing image home page</h1>');
 });
 
-routes.use('/preview',preview);
+routes.use('/resize',resize);
 
 export default routes;

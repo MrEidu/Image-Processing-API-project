@@ -40,12 +40,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var sharp_1 = __importDefault(require("sharp"));
-var about = express_1.default.Router();
-//Get called by routers
-about.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var current_url, search_params, heightParam, widthParam, error_1;
+var resize = express_1.default.Router();
+//Get called by routes/index
+resize.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var current_url, search_params, heightParam, widthParam, fileName, inputFile, imageOnBuffer, output, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -53,76 +54,44 @@ about.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 search_params = current_url.searchParams;
                 heightParam = search_params.get('height');
                 widthParam = search_params.get('width');
+                fileName = search_params.get('file');
+                console.log("File name: ".concat(fileName, ", Width: ").concat(widthParam, ", Height: ").concat(heightParam));
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, (0, sharp_1.default)("../../images/stored images/20211219_141722 1.jpg")
-                        .resize({
-                        height: heightParam,
-                        width: widthParam
-                    })
-                        .toFormat("jpeg", { mozjpeg: true })
-                        .toFile("../../images/thumbnails/processedImage.jpg")];
+                inputFile = path_1.default.join(__dirname, "../../../src/images/stored images/".concat(fileName));
+                imageOnBuffer = fs_1.default.readFileSync(inputFile);
+                console.log("File ".concat(fileName, " succesfuly found. Resizing..."));
+                return [4 /*yield*/, (0, sharp_1.default)(imageOnBuffer)
+                        .resize({ height: undefined, width: widthParam })
+                        .toBuffer()];
             case 2:
-                _a.sent();
-                res.sendFile(path_1.default.join(__dirname, "../../images/thumbnails/processedImage.jpg"));
+                output = _a.sent();
+                //saves image from buffer to file
+                fs_1.default.writeFile(path_1.default.join(__dirname, "../../../src/images/thumbnails/".concat(fileName)), output, function (err) {
+                    if (err) {
+                        console.log("Error: Input Missing. See src/routes/api/resize.ts");
+                    }
+                    else {
+                        console.log("Image stored on thumbnails");
+                    }
+                });
+                res.sendFile(path_1.default.join(__dirname, "../../../src/images/thumbnails/".concat(fileName)));
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                res.sendFile(path_1.default.join(__dirname, "../../images/stored images/20211219_141722 1.jpg"));
+                res.send("Error");
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); });
-//this function checks if there is an image already created with matching specs
-function checkThumbnail() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, sharp_1.default)("../../images/thumbnails/processedImage")
-                        .metadata()
-                        .then(function (data) { return true; })
-                        .catch(function (err) { return false; })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, true];
-            }
-        });
-    });
-}
-//this is the async funtion to create a new image
-function createNewImage(heightParam, widthParam) {
-    return __awaiter(this, void 0, void 0, function () {
-        var error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 5, , 6]);
-                    if (!(heightParam != null && widthParam != null)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, (0, sharp_1.default)("../../../build/images/stored images/20211219_141722 1.jpg")
-                            .resize({
-                            height: heightParam,
-                            width: widthParam
-                        })
-                            .toFormat("jpeg", { mozjpeg: true })
-                            .toFile("../../../build/images/thumbnails/processedImage.jpg")];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, (0, sharp_1.default)("../../../build/images/stored images/20211219_141722 1.jpg")
-                        .toFormat("jpeg", { mozjpeg: true })
-                        .toFile("C:\\Users\\angel\\Image Processing API Udacity\\Image-Processing-API-project\\src\\images\\thumbnails")];
-                case 3:
-                    _a.sent();
-                    _a.label = 4;
-                case 4: return [2 /*return*/, true];
-                case 5:
-                    error_2 = _a.sent();
-                    return [2 /*return*/, false];
-                case 6: return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.default = about;
+exports.default = resize;
+/* const sharpResizer = (
+    req: express.Request,
+    res: express.Response,
+    next: Function
+    ): void => {
+        const resizeImage = true;
+        next();
+    } */
