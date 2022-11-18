@@ -7,7 +7,7 @@ var express_1 = __importDefault(require("express"));
 var resize_1 = __importDefault(require("./api/resize"));
 var routes = express_1.default.Router();
 routes.get('/', function (req, res) {
-    res.send('<h1>Api Processing image home page</h1>');
+    res.send("\n        <h1>Api Processing image home page < /h1>\n        <p > Try the following links: </p>\n        <ul>\n            <li>http://localhost:3000/api/resize?file=015.jpg&width=500&height=100</li>\n            <li>http://localhost:3000/api/resize?file=20211219_141722%201.jpg&width=200</li>\n        </ul>\n    ");
 });
 routes.use('/resize', resize_1.default);
 exports.default = routes;

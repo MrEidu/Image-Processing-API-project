@@ -46,7 +46,7 @@ var sharp_1 = __importDefault(require("sharp"));
 var resize = express_1.default.Router();
 //Get called by routes/index
 resize.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var current_url, search_params, heightParam, widthParam, fileName, inputFile, imageOnBuffer, output, error_1;
+    var imageOnBuffer, current_url, search_params, heightParam, widthParam, fileName, heightNumber, widthNumber, matched, inputFile, data, error_1, abort404, output, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -55,43 +55,95 @@ resize.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 heightParam = search_params.get('height');
                 widthParam = search_params.get('width');
                 fileName = search_params.get('file');
-                console.log("File name: ".concat(fileName, ", Width: ").concat(widthParam, ", Height: ").concat(heightParam));
-                _a.label = 1;
+                if (!(fileName == null)) return [3 /*break*/, 1];
+                res.status(400).send("Error 400 Bad Request: A file name must be provided");
+                return [3 /*break*/, 12];
             case 1:
-                _a.trys.push([1, 3, , 4]);
-                inputFile = path_1.default.join(__dirname, "../../../src/images/stored images/".concat(fileName));
-                imageOnBuffer = fs_1.default.readFileSync(inputFile);
-                console.log("File ".concat(fileName, " succesfuly found. Resizing..."));
-                return [4 /*yield*/, (0, sharp_1.default)(imageOnBuffer)
-                        .resize({ height: undefined, width: widthParam })
-                        .toBuffer()];
+                heightNumber = heightParam != null ? parseInt(heightParam) : undefined;
+                widthNumber = widthParam != null ? parseInt(widthParam) : undefined;
+                matched = true;
+                _a.label = 2;
             case 2:
+                _a.trys.push([2, 5, , 6]);
+                //this try is for opening the file
+                try {
+                    inputFile = path_1.default.join(__dirname, "../../../src/images/thumbnails/".concat(fileName));
+                    //attempts to read file to use as input for sharp
+                    imageOnBuffer = fs_1.default.readFileSync(inputFile);
+                }
+                catch (error) {
+                    //thumbnail doesn't exist to there is no match
+                    matched = false;
+                }
+                if (!matched) return [3 /*break*/, 4];
+                return [4 /*yield*/, (0, sharp_1.default)(imageOnBuffer).metadata()];
+            case 3:
+                data = _a.sent();
+                //if data doesnt' match parameters, its not a match
+                if (!(data.width == widthNumber && data.height == heightNumber ||
+                    widthNumber == undefined && data.height == heightNumber ||
+                    data.width == widthNumber && heightNumber == undefined)) {
+                    matched = false;
+                }
+                res.locals.thumbnailStatus = "Thumbnail already existed, loaded existing thumbnail";
+                _a.label = 4;
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                error_1 = _a.sent();
+                matched = false;
+                res.locals.messageError = "Sharp failed to process aready existing thumbnail metadata";
+                console.log(res.locals.messageError);
+                return [3 /*break*/, 6];
+            case 6:
+                abort404 = false;
+                if (!matched) return [3 /*break*/, 7];
+                res.end(imageOnBuffer);
+                return [3 /*break*/, 11];
+            case 7:
+                _a.trys.push([7, 10, , 11]);
+                //attempts tp read file to use as input for sharp
+                try {
+                    imageOnBuffer = fs_1.default.readFileSync(path_1.default.join(__dirname, "../../../src/images/stored images/".concat(fileName)));
+                }
+                catch (error) {
+                    abort404 = true;
+                }
+                if (!!abort404) return [3 /*break*/, 9];
+                return [4 /*yield*/, (0, sharp_1.default)(imageOnBuffer)
+                        .resize({ height: heightNumber, width: widthNumber })
+                        .toBuffer()];
+            case 8:
                 output = _a.sent();
                 //saves image from buffer to file
                 fs_1.default.writeFile(path_1.default.join(__dirname, "../../../src/images/thumbnails/".concat(fileName)), output, function (err) {
                     if (err) {
-                        console.log("Error: Input Missing. See src/routes/api/resize.ts");
+                        console.log("Image could not be saved on the thumbnails folder");
                     }
                     else {
-                        console.log("Image stored on thumbnails");
+                        console.log("Image stored on thumbnails folder");
                     }
                 });
-                res.sendFile(path_1.default.join(__dirname, "../../../src/images/thumbnails/".concat(fileName)));
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _a.sent();
-                res.send("Error");
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                //If all went okay, it loads the output image and sends log of success
+                res.locals.thumbnailStatus = "Thumbnail created from stored images";
+                console.log("Thumbnail Created");
+                res.end(output);
+                _a.label = 9;
+            case 9: return [3 /*break*/, 11];
+            case 10:
+                error_2 = _a.sent();
+                //If it goes wrong, it sends an error message
+                res.locals.failed = true;
+                return [3 /*break*/, 11];
+            case 11:
+                if (res.locals.failed && !abort404) {
+                    res.status(400).send("Error 400 Bad Request: ".concat(res.locals.messageError));
+                }
+                else if (abort404) {
+                    res.status(404).send("Error 404: File not found");
+                }
+                _a.label = 12;
+            case 12: return [2 /*return*/];
         }
     });
 }); });
 exports.default = resize;
-/* const sharpResizer = (
-    req: express.Request,
-    res: express.Response,
-    next: Function
-    ): void => {
-        const resizeImage = true;
-        next();
-    } */

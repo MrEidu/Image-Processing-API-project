@@ -8,6 +8,6 @@ const port = 3000;
 app.use('/api', routes);
 
 //check for port
-app.listen(port, () => console.log(`Server started at http://localhost:${port}`));
+app.listen(port, () => console.log(`Server started at http://localhost:${port}/api`));
 
 export default app;

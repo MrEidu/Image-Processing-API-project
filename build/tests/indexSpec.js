@@ -41,7 +41,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../index"));
-var resizeImage_1 = __importDefault(require("../utilities/resizeImage"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
 var request = (0, supertest_1.default)(index_1.default);
 describe("Enpoint testing", function () {
     it("Connects to test endpoint", function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -58,10 +59,61 @@ describe("Enpoint testing", function () {
     }); });
 });
 describe("Sharp dependency testing", function () {
-    it("Sharp creates a new Thumbnail", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("Sharp creates a new Thumbnail for TestImage.jpg", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var link, response;
         return __generator(this, function (_a) {
-            expect(resizeImage_1.default).toBeTrue();
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    link = '/api/resize?file=Test%20Image.jpg&width=200';
+                    return [4 /*yield*/, request.get(link)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).not.toBe(400);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Sharp shows already created Thumbnail TestImage.jpg", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var link, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    link = '/api/resize?file=Test%20Image.jpg&width=200';
+                    return [4 /*yield*/, request.get(link)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).not.toBe(400);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Resize url doesn't have a file name parameter", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var link, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    link = '/api/resize?width=100';
+                    return [4 /*yield*/, request.get(link)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(400);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Resize url doesn't find a file", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var link, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    link = '/api/resize?file=Test%20Image.gif&width=200';
+                    return [4 /*yield*/, request.get(link)];
+                case 1:
+                    response = _a.sent();
+                    fs_1.default.unlinkSync(path_1.default.join(__dirname, "../../src/images/thumbnails/Test Image.jpg"));
+                    expect(response.status).toBe(404);
+                    return [2 /*return*/];
+            }
         });
     }); });
 });
