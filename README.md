@@ -1,4 +1,10 @@
 # Image Processing API Project
-Hello! This is my first project that I'll do from scratch using all the knowledge
-I have leared from Udacity Full-Stack JavaScript Developer Nanodegree course.
-I may add more stuff to this readme, but for now I'll keep it simple. _Hugs!_
+Hello! This project is part of the first project of Udacity Full-Stack Javascript Developer
+## Scripts
+These are the following scripts to test and run the server:
+```bash
+npm run test
+npm run start
+```
+## Endpoints
+These are the main enpoints

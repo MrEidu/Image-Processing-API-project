@@ -1,19 +1,17 @@
 import express from "express";
+import path from "path";
+import deleteFile from "./api/delete";
 import resize from "./api/resize";
+import uploader from "./api/upload";
 
 const routes = express.Router();
 
 routes.get('/', (req, res) => {
-    res.send(`
-        <h1>Api Processing image home page < /h1>
-        <p > Try the following links: </p>
-        <ul>
-            <li>http://localhost:3000/api/resize?file=015.jpg&width=500&height=100</li>
-            <li>http://localhost:3000/api/resize?file=20211219_141722%201.jpg&width=200</li>
-        </ul>
-    `);
+    res.sendFile(path.join(__dirname, '../../src/html/index.html'));
 });
 
 routes.use('/resize', resize);
+routes.use('/delete', deleteFile);
+routes.use('/upload', uploader); //This feature has no fucntion. Not implemented.
 
 export default routes;

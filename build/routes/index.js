@@ -4,10 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var path_1 = __importDefault(require("path"));
+var delete_1 = __importDefault(require("./api/delete"));
 var resize_1 = __importDefault(require("./api/resize"));
+var upload_1 = __importDefault(require("./api/upload"));
 var routes = express_1.default.Router();
 routes.get('/', function (req, res) {
-    res.send("\n        <h1>Api Processing image home page < /h1>\n        <p > Try the following links: </p>\n        <ul>\n            <li>http://localhost:3000/api/resize?file=015.jpg&width=500&height=100</li>\n            <li>http://localhost:3000/api/resize?file=20211219_141722%201.jpg&width=200</li>\n        </ul>\n    ");
+    res.sendFile(path_1.default.join(__dirname, '../../src/html/index.html'));
 });
 routes.use('/resize', resize_1.default);
+routes.use('/delete', delete_1.default);
+routes.use('/upload', upload_1.default); //This feature has no fucntion. Not implemented.
 exports.default = routes;

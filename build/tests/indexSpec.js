@@ -44,8 +44,10 @@ var index_1 = __importDefault(require("../index"));
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var request = (0, supertest_1.default)(index_1.default);
+//These are the following test:
+//This just connects to the main endpoint
 describe("Enpoint testing", function () {
-    it("Connects to test endpoint", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("Connects to main endpoint", function () { return __awaiter(void 0, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -82,6 +84,8 @@ describe("Sharp dependency testing", function () {
                     return [4 /*yield*/, request.get(link)];
                 case 1:
                     response = _a.sent();
+                    //this one will delete "Test Image.jpg". To prevent that make the line below a comment
+                    fs_1.default.unlinkSync(path_1.default.join(__dirname, "../../src/images/thumbnails/Test Image.jpg"));
                     expect(response.status).not.toBe(400);
                     return [2 /*return*/];
             }
@@ -110,7 +114,6 @@ describe("Sharp dependency testing", function () {
                     return [4 /*yield*/, request.get(link)];
                 case 1:
                     response = _a.sent();
-                    fs_1.default.unlinkSync(path_1.default.join(__dirname, "../../src/images/thumbnails/Test Image.jpg"));
                     expect(response.status).toBe(404);
                     return [2 /*return*/];
             }

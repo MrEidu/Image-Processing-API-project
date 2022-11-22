@@ -1,7 +1,6 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { abort } from "process";
 import sharp from "sharp";
 const resize = express.Router();
 
@@ -69,8 +68,8 @@ resize.get('/', async (req, res) => {
                 } catch (error) {
                     abort404 = true;
                 }
-                //Sharp is used here
                 if (!abort404) {
+                    //Sharp is used here
                     const output = await sharp(imageOnBuffer)
                         .resize({ height: heightNumber, width: widthNumber })
                         .toBuffer();

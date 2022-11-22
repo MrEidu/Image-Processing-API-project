@@ -10,5 +10,5 @@ var port = 3000;
 //This is the main Endpoint
 app.use('/api', routes_1.default);
 //check for port
-app.listen(port, function () { return console.log("Server started at http://localhost:".concat(port)); });
+app.listen(port, function () { return console.log("Server started at http://localhost:".concat(port, "/api")); });
 exports.default = app;
