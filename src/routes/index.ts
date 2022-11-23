@@ -6,7 +6,7 @@ import uploader from "./api/upload";
 
 const routes = express.Router();
 
-routes.get('/', (req, res) => {
+routes.get('/', (req: express.Request, res: express.Response) => {
     res.sendFile(path.join(__dirname, '../../src/html/index.html'));
 });
 

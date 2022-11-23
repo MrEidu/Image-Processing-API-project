@@ -3,7 +3,7 @@ import path from 'path';
 
 const uploader = express.Router();
 
-uploader.get('/', async (req, res) => {
+uploader.get('/', async (req: express.Request, res: express.Response) => {
     res.sendFile(path.join(__dirname, '../../../src/html/api/upload.html'));
 });
 

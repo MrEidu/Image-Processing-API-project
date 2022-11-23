@@ -3,12 +3,12 @@ import fs from "fs";
 import path from "path";
 const deleteImage = express.Router();
 
-deleteImage.get('/', async (req, res) => {
+deleteImage.get('/', async (req: express.Request, res: express.Response) => {
     res.sendFile(path.join(__dirname, '../../../src/html/api/delete.html'));
 });
 
 //Get called by routes/index
-deleteImage.get('/delete', async (req, res) => {
+deleteImage.get('/delete', async (req: express.Request, res: express.Response) => {
     //fetch parameters from the current url is being called
     const current_url = new URL(req.protocol + '://' + req.get('host') + req.originalUrl);
     const search_params = current_url.searchParams;
