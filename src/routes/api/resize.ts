@@ -100,3 +100,17 @@ resize.get('/', async (req, res) => {
 });
 
 export default resize;
+/*
+Documentation and the aid to reach a solution was from the following links:
+    Sharp Documentation:
+    * https://www.npmjs.com/package/sharp
+    Tutorial of how to use sharp:
+    * https://www.digitalocean.com/community/tutorials/how-to-process-images-in-node-js-with-sharp
+    Search Parameters
+    * https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+    FS
+    * This one was from notes from the course
+    * For readfilesyng: https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
+    Links in server:
+    * https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
+*/

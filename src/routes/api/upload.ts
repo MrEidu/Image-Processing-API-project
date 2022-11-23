@@ -8,3 +8,8 @@ uploader.get('/', async (req, res) => {
 });
 
 export default uploader;
+/*
+Documentation and the aid to reach a solution was from the following links:
+    Links in server:
+    * https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
+*/

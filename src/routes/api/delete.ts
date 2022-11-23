@@ -39,3 +39,13 @@ deleteImage.get('/delete', async (req, res) => {
 });
 
 export default deleteImage;
+/*
+Documentation and the aid to reach a solution was from the following links:
+    Search Parameters
+    * https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+    FS
+    * This one was from notes from the course
+    * For readfilesyng: https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
+    Links in server:
+    * https://www.geeksforgeeks.org/node-js-fs-readfilesync-method/
+*/
