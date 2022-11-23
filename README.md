@@ -7,4 +7,8 @@ npm run test
 npm run start
 ```
 ## Endpoints
-These are the main enpoints
+This is the entry enpoints (more provided on the page)
+Main Page
+```bash
+http://localhost:3000/api
+```
