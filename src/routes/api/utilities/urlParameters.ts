@@ -1,20 +1,29 @@
 //Checks if the input is undefined to ignore later, or a valid number
 //if fails, sends an error
-function paramToInt(size: unknown, param: string) {
-    const value = size as string != null ? parseInt(size as string) : undefined;
-    if (value !== undefined) {
+function paramToInt(size: string | null, param: string) {
+    console.log("Enter ParamOInt");
+    if (size === null) {
+        console.log("returned null");
+        return undefined;
+    } else {
+        console.log("doing parse intEnter ParamOInt");
+        const value = parseInt(size);
         if (isNaN(value)) {
+            console.log("is nan");
             throw new Error(`${param} is not a number! To set it to automatic or original size delete "${param}=${size}" of the URL, otherwise change the value to a real positive number.`);
         }
+        console.log("is not a nan");
         if (value as number <= 0) {
+            console.log("is less than 0");
             throw new Error(`${param} cannot be zero or a negative number.`);
         }
+        return value;
     }
-    return value;
 }
 //this function may be self explanatory
 function hasValidFormat(name: string) {
     // JPEG, PNG, WebP, GIF and AVIF
+
     const format = name.toLowerCase();
     if (format.endsWith(".jpg")) return true;
     if (format.endsWith(".png")) return true;
@@ -25,23 +34,25 @@ function hasValidFormat(name: string) {
     throw new Error(`${name} has no valid format. Supported formats are JPG, JPEG, PNG, GIF, WebP and AVIF.`);
 }
 function hasNoSpecialCharacters(name: string) {
+    console.log("noSPecialChar");
     const err = new Error(`${name} cannot contain: / : * ? " < > |`);
+    console.log(name);
     if (name.search("/") != -1) throw err;
     if (name.search(":") != -1) throw err;
-    if (name.search("*") != -1) throw err;
-    if (name.search("?") != -1) throw err;
+    //if (name.search("*") != -1) throw err;
+    //if (name.search("?") != -1) throw err;
     if (name.search("<") != -1) throw err;
     if (name.search(">") != -1) throw err;
-    if (name.search("|") != -1) throw err;
+    //if (name.search("|") != -1) throw err;
     if (name.search(`"`) != -1) throw err;
+
     return true;
 }
 //This is the function to get all data from url to pass as array to sharp
 export function getValues(current_url: URL) {
     //Array that will contain [filename, width, height] in that order
     // eslint-disable-next-line prefer-const
-    let data: [string, number | undefined, number | undefined] = ["", 0, 0];
-    //fetch parameters from the current url is being called
+    let data: [string, number | undefined, number | undefined] = ["", undefined, undefined];
     const search_params = current_url.searchParams;
     //Verifies if the name of file is valid
     const nameFile = search_params.get("file");
@@ -62,4 +73,38 @@ export function getValues(current_url: URL) {
 /**
  * EndsWith:
  * https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+ *
+ * Nervous yoshi
+  ████████████████████████████████████████████████
+██████████████████████████      ██      ████████████
+████████████████████████  ██████  ██████  ██████████
+██████████████████████  ██████████████████  ████████
+████████████████████    ██████████████████  ████████
+██████████████████  ██  ████  ████  ██████  ████████
+████████████████  ▒▒▓▓  ████████████        ████████
+████████████████      ▒▒  ██████░░░░▒▒▒▒▒▒▒▒  ██████
+██████████████████  ▒▒▒▒▒▒  ░░░░▒▒▒▒▒▒▒▒▒▒████  ████
+████████████████    ▒▒▒▒██████▒▒▒▒▒▒▒▒  ▒▒▒▒    ████
+██████████████  ██  ░░██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ██
+██████████████  ▓▓  ░░██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ██
+██████████████  ▒▒  ░░▓▓████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ██
+████████████████      ▓▓▓▓▓▓░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒  ██
+██████████████████  ▓▓  ▓▓▓▓▓▓░░░░░░░░▒▒▒▒▒▒▒▒  ████
+██████████████████      ░░▒▒▓▓      ░░░░░░    ██████
+████████████      ▓▓  ░░▒▒▒▒▓▓▓▓▓▓        ██████████
+██████████  ▓▓██      ░░▒▒██████  ██████████████████
+██████    ▓▓▓▓    ▒▒▒▒▒▒▒▒██████  ██████████████████
+██      ██    ▒▒▒▒▒▒▒▒  ████████  ██████████████████
+██  ▒▒▒▒    ▒▒▒▒▒▒▒▒  ██████████  ██████████████████
+██  ██░░  ▒▒▒▒▒▒████▒▒  ████████  ██████████████████
+██  ████  ▒▒▒▒▒▒████    ██████    ██████████████████
+████  ▓▓  ░░▒▒▒▒▒▒▒▒▒▒  ██████  ████████████████████
+████  ▓▓▓▓  ░░▒▒▒▒▒▒  ████▓▓  ██████████████████████
+██████              ▓▓▓▓▓▓▓▓  ██████████████████████
+██████  ░░▒▒▓▓▓▓  ▓▓▓▓      ████████████████████████
+██████  ░░▒▒▓▓▓▓      ▒▒      ██████████████████████
+████  ░░░░░░▒▒██▓▓  ░░▒▒▓▓▓▓██  ████████████████████
+████  ░░░░▒▒▓▓▓▓▓▓  ░░░░▒▒▒▒▓▓  ████████████████████
+████                            ████████████████████
+  ████████████████████████████████████████████████
  */

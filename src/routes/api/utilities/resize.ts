@@ -2,16 +2,21 @@ import path from "path";
 import fs from "fs";
 import sharp from "sharp";
 
-export async function resizeImage(current_url: URL, data: [string, number | undefined, number | undefined]) {
-    let theImage;
+export async function resizeImage(data: [string, number | undefined, number | undefined]) {
+    //data[0] = NameFile, data[1] = width, data[2] height.
+    //declaring paths to get or save images
+    const thumbnailPath = path.join(__dirname, `../../../images/thumbnails/${data[0]}`);
+    const imagePath = path.join(__dirname, `../../../images/stored images/${data[0]}`);
+    //these will be the images as variables because sharp doesn't accepts paths from fs
+    let thumbnail;
+    let image;
+    //will save process if there is an existing thumbnail
     let matched = true;
     try {
-        //this try is for opening the file
+        //this try catch is for opening the thumbnail file
         try {
-            //creates path to stored thumbnail images to read file
-            const inputFile = path.join(__dirname, `../../../src/images/thumbnails/${data[0]}`) as string;
             //attempts to read file to use as input for sharp
-            theImage = fs.readFileSync(inputFile);
+            thumbnail = fs.readFileSync(thumbnailPath);
         } catch (error) {
             //thumbnail doesn't exist to there is no match
             console.log("No thumbnail matched, creating new thumbnail");
@@ -20,7 +25,7 @@ export async function resizeImage(current_url: URL, data: [string, number | unde
         //if there is a thumbnail of the requested file, reads metadata
         if (matched) {
             //Sharp is used here to search if metadata match the specified size
-            const metadata = await sharp(theImage).metadata();
+            const metadata = await sharp(thumbnail).metadata();
 
             //if data doesnt' match parameters, its not a match
             if (!(metadata.width == data[1] && metadata.height == data[2] ||
@@ -33,43 +38,42 @@ export async function resizeImage(current_url: URL, data: [string, number | unde
         }
     } catch (error) {
         matched = false;
-        console.log("Sharp failed to process aready existing thumbnail metadata. Making new one");
+        console.log("ERROR: Thumbnail may be corrupted, since sharp crashed. Making new one");
     }
-    let abort404 = false; //this one is a failsafe of a file that doesn't exist
+    //if there is a thumbnail, sends path. Otherwise creates new thumbnail.
     if (matched) {
-        return theImage;
+        return thumbnailPath;
         //if there is no match, it creates the thumbnail
     } else {
-        //this try and catch will attempt to read file, resize it and store in thumbnails
+        //attempts tp read file to use as input for sharp
         try {
-            //attempts tp read file to use as input for sharp
-            try {
-                theImage = fs.readFileSync(path.join(__dirname, `../../../src/images/stored images/${data[0]}`) as string);
-            } catch (error) {
-                abort404 = true;
-            }
-            if (!abort404) {
-                //Sharp is used here
-                const output = await sharp(theImage)
-                    .resize({ height: data[2], width: data[1] })
-                    .toBuffer();
-                //saves image from buffer to file
-                fs.writeFile(path.join(__dirname, `../../../src/images/thumbnails/${data[0]}`) as string, output as Buffer, (err) => {
-                    if (err) {
-                        console.log("Image could not be saved on the thumbnails folder");
-                    } else {
-                        console.log("Image stored on thumbnails folder");
-                    }
-                });
-                //If all went okay, it loads the output image and sends log of success
-                console.log("Thumbnail created from stored images");
-                console.log("Thumbnail Created");
-                return output;
-            }
+            image = fs.readFileSync(imagePath);
         } catch (error) {
-            //If it goes wrong, it sends an error message
-            throw new Error("Sharp failed for some reason");
+            //this will show if the file doesn't exist or somehow fs can't read it
+            throw new Error(`${data[0]} does not exist or couldn't be opened. ${error}`);
+        }
+        //Sharp is used here
+        try {
+            thumbnail = await sharp(image)
+                .resize({ height: data[2], width: data[1] })
+                .toBuffer();
+        } catch (error) {
+            throw new Error(`${data[0]} may be corrupted or couldn't be processed by sharp. ${error}`);
 
         }
+        //saves image from buffer to file
+        try {
+            fs.writeFile(thumbnailPath, thumbnail, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        } catch (error) {
+            throw new Error(`Failed to save new thumbnail. ${error}`);
+        }
+        //If all went okay, it loads the output image and sends log of success
+        console.log("Thumbnail created from stored images");
+        console.log("Thumbnail Created");
     }
+    return thumbnailPath;
 }
