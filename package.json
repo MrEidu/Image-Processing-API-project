@@ -6,8 +6,8 @@
   "scripts": {
     "build": "npx tsc",
     "test": "npm run build && npm run jasmine",
-    "lint": "eslint 'index.ts'",
-    "prettier": "prettier --config .prettierrc '*.ts' --write",
+    "lint": "eslint . --ext .ts",
+    "prettier": "prettier --write src/**/*.ts",
     "jasmine": "jasmine",
     "start": "nodemon build/index.js"
   },
@@ -35,11 +35,17 @@
     "@types/node": "^18.11.9",
     "@types/sharp": "^0.31.0",
     "@types/supertest": "^2.0.12",
-    "eslint": "^8.8.0",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.5.1",
     "typescript": "^4.8.4"
+  },
+  "[typescript]": {
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
   }
 }
