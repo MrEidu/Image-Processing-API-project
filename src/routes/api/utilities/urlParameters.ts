@@ -1,22 +1,16 @@
 //Checks if the input is undefined to ignore later, or a valid number
 //if fails, sends an error
 function paramToInt(size: string | null, param: string) {
-  console.log("Enter ParamOInt");
   if (size === null) {
-    console.log("returned null");
     return undefined;
   } else {
-    console.log("doing parse intEnter ParamOInt");
     const value = parseInt(size);
     if (isNaN(value)) {
-      console.log("is nan");
       throw new Error(
         `${param} is not a number! To set it to automatic or original size delete "${param}=${size}" of the URL, otherwise change the value to a real positive number.`
       );
     }
-    console.log("is not a nan");
     if ((value as number) <= 0) {
-      console.log("is less than 0");
       throw new Error(`${param} cannot be zero or a negative number.`);
     }
     return value;
@@ -38,9 +32,7 @@ function hasValidFormat(name: string) {
   );
 }
 function hasNoSpecialCharacters(name: string) {
-  console.log("noSPecialChar");
   const err = new Error(`${name} cannot contain: / : * ? " < > |`);
-  console.log(name);
   if (name.search("/") != -1) throw err;
   if (name.search(":") != -1) throw err;
   //if (name.search("*") != -1) throw err;

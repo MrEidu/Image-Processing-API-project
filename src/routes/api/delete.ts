@@ -1,5 +1,6 @@
 import express from "express";
-import fs from "fs";
+import { deleter } from "./utilities/delete";
+import { getValues } from "./utilities/urlParameters";
 import path from "path";
 const deleteImage = express.Router();
 
@@ -11,41 +12,38 @@ deleteImage.get("/", async (req: express.Request, res: express.Response) => {
 deleteImage.get(
   "/delete",
   async (req: express.Request, res: express.Response) => {
-    //fetch parameters from the current url is being called
+    //will obtain the values to use in sharp from the url
     const current_url = new URL(
       req.protocol + "://" + req.get("host") + req.originalUrl
     );
-    const search_params = current_url.searchParams;
-    const fileName = search_params.get("file"); // as unknown as string;
-
-    if (fileName == null) {
-      res
-        .status(400)
-        .send("Error 400 Bad Request: A file name must be provided");
-    } else {
-      //this try and catch will attempt to find and delete the thumbnail
-      try {
-        fs.unlinkSync(
-          path.join(__dirname, `../../../src/images/thumbnails/${fileName}`)
-        );
-      } catch (error) {
-        //in this case I don't mind if the thumbnail doesn't exist. I just report to log
-        console.log("Thumbnail doesn't exist");
-      }
-      //this try and catch will attempt to find and delete the thumbnail
-      try {
-        console.log(
-          path.join(__dirname, `../../../src/images/stored images/${fileName}`)
-        );
-        fs.unlinkSync(
-          path.join(__dirname, `../../../src/images/stored images/${fileName}`)
-        );
+    //this will contain values from parameters from url
+    let urlParameters: [string, number | undefined, number | undefined] = [
+      "",
+      undefined,
+      undefined,
+    ];
+    //bool to see if url was good or should not process further
+    let validURL = true;
+    // urlParameters index means: [0] = namefile, [1] = width, [2] = height,
+    //try and catch to see if there's something wrong with the url parameters
+    try {
+      urlParameters = getValues(current_url);
+    } catch (error) {
+      res.status(400).send(`400 Bad Request: ${error}`);
+      validURL = false;
+    }
+    if (validURL) {
+      if (await deleter(urlParameters[0]))
         res.send(`
-                <h3>File Deleted succesfully</h3>
-                <h3><i><a href="/api/delete">Go back</a></i></h3>
-            `);
-      } catch (error) {
-        res.status(400).send("Error 400 Bad Request: File does not exist");
+        <h3>File Deleted succesfully</h3>
+        <h3><i><a href="/api/delete">Go back</a></i></h3>
+    `);
+      else {
+        res
+          .status(404)
+          .send(
+            `404 Not Found: File does not exist or has been already deleted`
+          );
       }
     }
   }
