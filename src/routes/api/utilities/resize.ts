@@ -4,7 +4,7 @@ import sharp from "sharp";
 
 export async function resizeImage(
   data: [string, number | undefined, number | undefined]
-) {
+): Promise<Buffer> {
   //data[0] = NameFile, data[1] = width, data[2] height.
   //declaring paths to get or save images
   const thumbnailPath = path.join(
@@ -16,8 +16,8 @@ export async function resizeImage(
     `../../../images/stored images/${data[0]}`
   );
   //these will be the images as variables because sharp doesn't accepts paths from fs
-  let thumbnail;
-  let image;
+  let thumbnail: Buffer = Buffer.alloc(256);
+  let image: Buffer = Buffer.alloc(256);
   //will save process if there is an existing thumbnail
   let matched = true;
   try {
@@ -56,7 +56,7 @@ export async function resizeImage(
   }
   //if there is a thumbnail, sends path. Otherwise creates new thumbnail.
   if (matched) {
-    return thumbnailPath;
+    return thumbnail;
     //if there is no match, it creates the thumbnail
   } else {
     //attempts tp read file to use as input for sharp
@@ -64,9 +64,7 @@ export async function resizeImage(
       image = fs.readFileSync(imagePath);
     } catch (error) {
       //this will show if the file doesn't exist or somehow fs can't read it
-      throw new Error(
-        `${data[0]} does not exist or couldn't be opened. ${error}`
-      );
+      throw new Error(`${data[0]} does not exist or couldn't be opened.`);
     }
     //Sharp is used here
     try {
@@ -75,7 +73,7 @@ export async function resizeImage(
         .toBuffer();
     } catch (error) {
       throw new Error(
-        `${data[0]} may be corrupted or couldn't be processed by sharp. ${error}`
+        `${data[0]} may be corrupted and couldn't be processed by sharp.`
       );
     }
     //saves image from buffer to file
@@ -92,5 +90,5 @@ export async function resizeImage(
     console.log("Thumbnail created from stored images");
     console.log("Thumbnail Created");
   }
-  return thumbnailPath;
+  return thumbnail;
 }

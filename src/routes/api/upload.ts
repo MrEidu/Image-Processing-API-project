@@ -3,9 +3,12 @@ import path from "path";
 
 const uploader = express.Router();
 
-uploader.get("/", async (req: express.Request, res: express.Response) => {
-  res.sendFile(path.join(__dirname, "../../../src/html/api/upload.html"));
-});
+uploader.get(
+  "/",
+  async (req: express.Request, res: express.Response): Promise<void> => {
+    res.sendFile(path.join(__dirname, "../../../src/html/api/upload.html"));
+  }
+);
 
 export default uploader;
 /*

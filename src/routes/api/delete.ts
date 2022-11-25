@@ -4,14 +4,16 @@ import { getValues } from "./utilities/urlParameters";
 import path from "path";
 const deleteImage = express.Router();
 
-deleteImage.get("/", async (req: express.Request, res: express.Response) => {
-  res.sendFile(path.join(__dirname, "../../../src/html/api/delete.html"));
-});
-
+deleteImage.get(
+  "/",
+  async (req: express.Request, res: express.Response): Promise<void> => {
+    res.sendFile(path.join(__dirname, "../../../src/html/api/delete.html"));
+  }
+);
 //Get called by routes/index
 deleteImage.get(
   "/delete",
-  async (req: express.Request, res: express.Response) => {
+  async (req: express.Request, res: express.Response): Promise<void> => {
     //will obtain the values to use in sharp from the url
     const current_url = new URL(
       req.protocol + "://" + req.get("host") + req.originalUrl
