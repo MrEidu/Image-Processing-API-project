@@ -5,11 +5,16 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "test": "npm run build && npm run jasmine",
+    "test": "npm run copy && npm run build && npm run jasmine",
     "lint": "eslint . --ext .ts",
     "prettier": "prettier --write src/**/*.ts",
     "jasmine": "jasmine",
-    "start": "nodemon build/index.js"
+    "start": "nodemon build/index.js",
+    "copyHtmlApi": "copyfiles -f src/html/index.html build/html",
+    "copyHtmlUtility": "copyfiles -f src/html/api/** build/html/api",
+    "copyImagesThumbnails": "copyfiles -f src/images/thumbnails/** build/images/thumbnails/",
+    "copyImagesStored": "copyfiles -f \"src/images/stored images/**\" \"build/images/stored images/\"",
+    "copy": "npm run copyImagesStored && npm run copyImagesThumbnails && npm run copyHtmlUtility && npm run copyHtmlApi"
   },
   "repository": {
     "type": "git",
