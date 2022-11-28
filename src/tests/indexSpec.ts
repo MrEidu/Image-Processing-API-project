@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import supertest from "supertest";
 import app from "../index";
 import fs from "fs";
@@ -26,7 +27,9 @@ describe("Sharp by API request testing", () => {
     const link = "/api/resize?file=Test%20Image.jpg&width=200";
     const response = await request.get(link);
     //this one will delete "Test Image.jpg". To prevent that make the line below a comment
-    fs.unlinkSync(path.join(__dirname, `../images/thumbnails/Test Image.jpg`));
+    fs.unlinkSync(
+      path.join(__dirname, `../images/thumbnails/200_undefined_Test Image.jpg`)
+    );
     expect(response.status).toBe(200);
   });
   it("Resize url doesn't have a file name parameter", async function (): Promise<void> {
