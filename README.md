@@ -1,6 +1,9 @@
 # Image Processing API Project
 Hello! This project is part of the first project of Udacity Full-Stack Javascript Developer
 
+### Update to 6th Revision.
+The copyfiles has been moved to devDependencies
+
 ### A message for the 5th Revision.
 For some reason, this project only seems to work for me.
 The last 2 revisions, the path or source that uses the server to get the images doesn't seem to work.
