@@ -1,6 +1,8 @@
 # Image Processing API Project
 Hello! This project is part of the first project of Udacity Full-Stack Javascript Developer
 
+### Project finished
+
 ### Update to 6th Revision.
 The copyfiles has been moved to devDependencies
 
